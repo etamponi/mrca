@@ -9,5 +9,7 @@ class Imbalance(object):
         pass
 
     def __call__(self, x, y, inputs, labels):
+        if len(labels) == 0:
+            return 0
         count = (labels == y).sum()
         return 2 * count / len(labels) - 1

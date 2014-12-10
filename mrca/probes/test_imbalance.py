@@ -15,3 +15,7 @@ class TestImbalance(unittest.TestCase):
         probe = Imbalance()
         expected_value = (4 - 6) / 10
         self.assertAlmostEqual(expected_value, probe([1, 2, 3], "b", inputs, labels))
+
+    def test_empty_case(self):
+        probe = Imbalance()
+        self.assertEqual(0, probe([1, 2, 3], "a", numpy.asarray([[]]), numpy.asarray([])))

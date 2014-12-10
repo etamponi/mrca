@@ -26,19 +26,26 @@ class LinearBoundary(object):
             return +1
         same_mean = same_inputs.mean(axis=0)
         diff_mean = diff_inputs.mean(axis=0)
-        same_sos = self._sum_of_squares(same_inputs)
-        diff_sos = self._sum_of_squares(diff_inputs)
-        cov = 1.0 / (same_n + diff_n - 2) * (same_sos + diff_sos)
-        inv_cov = numpy.linalg.inv(cov)
+        if len(inputs) > 2:
+            same_sos = self._sum_of_squares(same_inputs - same_mean)
+            diff_sos = self._sum_of_squares(diff_inputs - diff_mean)
+            cov = 1.0 / (len(inputs) - 2) * (same_sos + diff_sos)
+        else:
+            # Do not use pooled estimator
+            cov = 1.0 / (len(inputs) - 1) * self._sum_of_squares(inputs - inputs.mean(axis=0))
+        try:
+            inv_cov = numpy.linalg.inv(cov)
+        except numpy.linalg.LinAlgError:
+            inv_cov = numpy.eye(inputs.shape[1])
         normal = numpy.dot(inv_cov, same_mean - diff_mean).reshape(inputs.shape[1])
         threshold = 0.5 * numpy.dot(normal, same_mean + diff_mean) + math.log(diff_n / same_n)
         return self._normalize(numpy.dot(normal, x) - threshold)
 
     @staticmethod
-    def _sum_of_squares(inputs):
-        n_features = inputs.shape[1]
+    def _sum_of_squares(centered_inputs):
+        n_features = centered_inputs.shape[1]
         ret = numpy.zeros((n_features, n_features))
-        for x in inputs:
+        for x in centered_inputs:
             ret += numpy.dot(x.reshape(n_features, 1), x.reshape(1, n_features))
         return ret
 

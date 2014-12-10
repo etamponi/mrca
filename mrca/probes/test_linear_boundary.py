@@ -28,3 +28,17 @@ class TestLinearBoundary(unittest.TestCase):
         self.assertEqual(1, value)
         value = probe(numpy.ones(3), "b", inputs, labels)
         self.assertEqual(-1, value)
+
+    def test_too_few_elements(self):
+        inputs = numpy.random.randn(2, 3)
+        labels = numpy.asarray(list("ab"))
+        probe = LinearBoundary()
+        value = probe(numpy.ones(3), "a", inputs, labels)
+        self.assertTrue(-1 <= value <= 1)
+
+    def test_zero_covariance(self):
+        inputs = numpy.ones((10, 3))
+        labels = numpy.asarray(list("aaaaabbbbb"))
+        probe = LinearBoundary()
+        value = probe(numpy.zeros(3), "a", inputs, labels)
+        self.assertTrue(-1 <= value <= 1)

@@ -42,3 +42,9 @@ class TestLinearBoundary(unittest.TestCase):
         probe = LinearBoundary()
         value = probe(numpy.zeros(3), "a", inputs, labels)
         self.assertTrue(-1 <= value <= 1)
+
+    def test_empty(self):
+        inputs = numpy.ones((0, 3))
+        labels = numpy.asarray([]).astype('|S1')
+        probe = LinearBoundary()
+        self.assertEqual(0, probe(numpy.zeros(3), "a", inputs, labels))

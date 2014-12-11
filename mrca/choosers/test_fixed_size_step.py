@@ -14,3 +14,10 @@ class TestFixedSizeStep(unittest.TestCase):
         chooser = FixedSizeStep(RadiusFinder("median"), smallest_size=2, largest_size=6, profile_dim=3)
         radii = chooser.choose(inputs)
         self.assertEqual(expected_radii, radii)
+
+    def test_float_size(self):
+        inputs = numpy.asarray([3, 7, 4, 9, 1, 2, 5]).reshape((7, 1))
+        expected_radii = [2, 3, 6]
+        chooser = FixedSizeStep(RadiusFinder("median"), smallest_size=0.3334, largest_size=1.0, profile_dim=3)
+        radii = chooser.choose(inputs)
+        self.assertEqual(expected_radii, radii)

@@ -19,4 +19,4 @@ class FixedRadiusStep(object):
         if isinstance(size, int):
             return size
         else:
-            return int(size * len(inputs))
+            return int(size * (len(inputs) - 1))

@@ -4,7 +4,7 @@ from mrca import choosers
 __author__ = 'Emanuele Tamponi'
 
 
-class FixedSizeStep(object):
+class LinearSizeStep(object):
 
     def __init__(self, finder, smallest_size, largest_size, profile_dim):
         self.finder = finder

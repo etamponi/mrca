@@ -1,7 +1,7 @@
 __author__ = 'Emanuele Tamponi'
 
 
-class FixedStepChooser(object):
+class FixedRadiusStep(object):
 
     def __init__(self, finder, smallest_size, profile_dim):
         self.finder = finder

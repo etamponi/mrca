@@ -1,3 +1,6 @@
+import glob
+import os
+import re
 from sklearn.ensemble.bagging import BaggingClassifier
 from sklearn.ensemble.forest import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.ensemble.gradient_boosting import GradientBoostingClassifier
@@ -9,19 +12,20 @@ __author__ = 'Emanuele Tamponi'
 
 
 CLASSIFIER_NAMES = ["ab", "gb", "ba", "rf", "et"]
-CLASSIFIERS = [
-    AdaBoostClassifier(n_estimators=100),
-    GradientBoostingClassifier(n_estimators=100),
-    BaggingClassifier(n_estimators=100),
-    RandomForestClassifier(n_estimators=100),
-    ExtraTreesClassifier(n_estimators=100)
-]
+CLASSIFIERS = {
+    "ab": AdaBoostClassifier(n_estimators=100),
+    "gb": GradientBoostingClassifier(n_estimators=100),
+    "ba": BaggingClassifier(n_estimators=100),
+    "rf": RandomForestClassifier(n_estimators=100),
+    "et": ExtraTreesClassifier(n_estimators=100)
+}
+N_FOLDS = 5
 
 PROBE_NAMES = ["imb", "lin"]
-PROBES = [
-    Imbalance(),
-    LinearBoundary()
-]
+PROBES = {
+    "imb": Imbalance(),
+    "lin": LinearBoundary()
+}
 
 PROFILE_SIZES = range(5, 41, 5)
 
@@ -36,3 +40,14 @@ LEGEND = {
 }
 
 CLUSTER_NUMS = [2, 3, 4, 5, 6]
+
+
+def dataset_names():
+    dataset_dir = os.path.join(os.path.dirname(__file__), "datasets")
+    names = []
+    for dataset_path in glob.glob("{}/*.arff".format(dataset_dir)):
+        names.append(re.search(r"([\w\-]+)\.arff", dataset_path).group(1))
+    return names
+
+
+DATASET_NAMES = dataset_names()

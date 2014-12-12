@@ -27,7 +27,7 @@ PROBES = {
     "lin": LinearBoundary()
 }
 
-PROFILE_SIZES = range(5, 41, 5)
+PROFILE_DIMS = range(5, 41, 5)
 
 LEGEND = {
     "ab": "AdaBoost",

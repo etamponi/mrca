@@ -11,16 +11,15 @@ __author__ = 'Emanuele Tamponi'
 
 def main():
     for dataset in evaluation.DATASET_NAMES:
-        predict_dataset(dataset)
+        prepare_dataset_predictions(dataset)
 
 
-def predict_dataset(dataset):
+def prepare_dataset_predictions(dataset):
     file_name = "{}_predictions".format(dataset)
     if os.path.isfile("intermediate/{}.int".format(file_name)):
         print "{} already done".format(file_name)
         return
     print "{} starting".format(file_name)
-
     inputs, labels = ArffLoader("datasets/{}.arff".format(dataset)).get_dataset()
     predictions = {key: numpy.zeros_like(labels) for key in evaluation.CLASSIFIER_NAMES}
     predictions["oracle"] = labels

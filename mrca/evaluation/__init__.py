@@ -1,4 +1,5 @@
 import glob
+from itertools import product
 import os
 import re
 from sklearn.ensemble.bagging import BaggingClassifier
@@ -26,8 +27,12 @@ PROBES = {
     "imb": Imbalance(),
     "lin": LinearBoundary()
 }
-
-PROFILE_DIMS = range(5, 41, 5)
+PROFILE_DIMS = range(5, 26, 5)
+SIZE_RANGES = [
+    (0.05, 0.25),
+    (0.10, 0.33),
+    (0.15, 0.50)
+]
 
 LEGEND = {
     "ab": "AdaBoost",

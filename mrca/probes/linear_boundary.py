@@ -31,11 +31,12 @@ class LinearBoundary(object):
             diff_sos = self._sum_of_squares(diff_inputs - diff_mean)
             cov = 1.0 / (len(inputs) - 2) * (same_sos + diff_sos)
         else:
-            # Do not use pooled estimator
+            # Do not use pooled estimator if we only have two data points
             cov = 1.0 / (len(inputs) - 1) * self._sum_of_squares(inputs - inputs.mean(axis=0))
         try:
             inv_cov = numpy.linalg.inv(cov)
         except numpy.linalg.LinAlgError:
+            # If covariance matrix is singular, assume it is a standard random variable
             inv_cov = numpy.eye(inputs.shape[1])
         normal = numpy.dot(inv_cov, same_mean - diff_mean).reshape(inputs.shape[1])
         threshold = 0.5 * numpy.dot(normal, same_mean + diff_mean) + math.log(diff_n / same_n)

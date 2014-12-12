@@ -10,8 +10,8 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    for dataset in evaluation.DATASET_NAMES:
-        prepare_dataset_predictions(dataset)
+    argument_list = [(dataset, ) for dataset in evaluation.DATASET_NAMES]
+    evaluation.run_parallel(prepare_dataset_predictions, argument_list)
 
 
 def prepare_dataset_predictions(dataset):

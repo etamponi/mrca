@@ -1,7 +1,9 @@
 import glob
 from itertools import product
+import multiprocessing
 import os
 import re
+import signal
 from sklearn.ensemble.bagging import BaggingClassifier
 from sklearn.ensemble.forest import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.ensemble.gradient_boosting import GradientBoostingClassifier
@@ -56,3 +58,20 @@ def dataset_names():
 
 
 DATASET_NAMES = dataset_names()
+
+
+def run_parallel(function, argument_list, processes=4):
+    pool = multiprocessing.Pool(processes=processes, initializer=init_worker)
+    try:
+        for arguments in argument_list:
+            pool.apply_async(function, args=tuple(arguments))
+        pool.close()
+        pool.join()
+    except KeyboardInterrupt:
+        print "Keyboard Interrupt, terminating..."
+        pool.terminate()
+        pool.join()
+
+
+def init_worker():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)

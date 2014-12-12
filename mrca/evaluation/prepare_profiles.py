@@ -12,9 +12,10 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    for dataset, probe_name, profile_dim, size_range in product(evaluation.DATASET_NAMES, evaluation.PROBE_NAMES,
-                                                                evaluation.PROFILE_DIMS, evaluation.SIZE_RANGES):
-        prepare_dataset_profiles(dataset, probe_name, profile_dim, size_range)
+    argument_list = product(
+        evaluation.DATASET_NAMES, evaluation.PROBE_NAMES, evaluation.PROFILE_DIMS, evaluation.SIZE_RANGES
+    )
+    evaluation.run_parallel(prepare_dataset_profiles, argument_list)
 
 
 def prepare_dataset_profiles(dataset, probe_name, profile_dim, size_range):

@@ -52,4 +52,10 @@ class LinearBoundary(object):
 
     @staticmethod
     def _normalize(x):
-        return 2 / (1 + math.exp(-x)) - 1
+        try:
+            return 2 / (1 + math.exp(-x)) - 1
+        except OverflowError:
+            if x > 0:
+                return 1
+            else:
+                return -1

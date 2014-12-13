@@ -8,6 +8,8 @@ from sklearn.ensemble.bagging import BaggingClassifier
 from sklearn.ensemble.forest import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.ensemble.gradient_boosting import GradientBoostingClassifier
 from sklearn.ensemble.weight_boosting import AdaBoostClassifier
+from mrca.choosers.linear_size_step import LinearSizeStep
+from mrca.choosers.radius_finder import RadiusFinder
 
 from mrca.probes.imbalance import Imbalance
 from mrca.probes.linear_boundary import LinearBoundary
@@ -37,6 +39,8 @@ SIZE_RANGES = [
     (0.10, 0.33),
     (0.15, 0.50)
 ]
+RADIUS_CHOOSER_CLASS = LinearSizeStep
+RADIUS_FINDER = RadiusFinder("median")
 
 LEGEND = {
     "ab": "AdaBoost",

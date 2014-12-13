@@ -6,9 +6,7 @@ from sklearn import preprocessing
 
 from analysis.dataset_utils import ArffLoader
 from mrca import evaluation
-from mrca.choosers.linear_size_step import LinearSizeStep
 from mrca.profile_transform import ProfileTransform
-from mrca.choosers.radius_finder import RadiusFinder
 
 
 __author__ = 'Emanuele Tamponi'
@@ -32,8 +30,8 @@ def prepare_dataset_profiles(dataset, probe_name, profile_dim, size_range):
     inputs, labels = ArffLoader("datasets/{}.arff".format(dataset)).get_dataset()
     preprocessing.scale(inputs, copy=False)
     transform = ProfileTransform(probe=evaluation.PROBES[probe_name],
-                                 chooser=LinearSizeStep(
-                                     RadiusFinder("median"), smallest_size, largest_size, profile_dim
+                                 chooser=evaluation.RADIUS_CHOOSER_CLASS(
+                                     evaluation.RADIUS_FINDER, smallest_size, largest_size, profile_dim
                                  ))
     profiles = transform(inputs, labels)
     with open("intermediate/{}.int".format(file_name), "w") as f:

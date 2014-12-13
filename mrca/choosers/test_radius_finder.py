@@ -2,7 +2,7 @@ import unittest
 
 import numpy
 
-from mrca.radius_finder import RadiusFinder
+from mrca.choosers.radius_finder import RadiusFinder
 
 
 __author__ = 'Emanuele Tamponi'

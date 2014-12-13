@@ -3,7 +3,7 @@ import unittest
 import numpy
 
 from mrca.choosers.fixed_radius_step import FixedRadiusStep
-from mrca.radius_finder import RadiusFinder
+from mrca.choosers.radius_finder import RadiusFinder
 
 
 __author__ = 'Emanuele Tamponi'

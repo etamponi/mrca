@@ -5,18 +5,17 @@ __author__ = 'Emanuele Tamponi'
 
 class RadiusFinder(object):
 
-    def __init__(self, method):
-        self.method = method
+    def __init__(self, inputs):
+        self.distance_matrix = distance.squareform(distance.pdist(inputs))
+        self.distance_matrix.sort()
 
-    def __call__(self, n_neighbors, inputs):
-        distance_matrix = distance.squareform(distance.pdist(inputs))
-        distance_matrix.sort()
-        distances = distance_matrix[:, n_neighbors]
-        if self.method == "max":
+    def __call__(self, method, n_neighbors):
+        distances = self.distance_matrix[:, n_neighbors]
+        if method == "max":
             return distances.max()
-        if self.method == "median":
+        if method == "median":
             distances.sort()
             mid_point = len(distances) // 2
             return 0.5 * (distances[mid_point] + distances[-1-mid_point])
-        if self.method == "mean":
+        if method == "mean":
             return distances.mean()

@@ -31,7 +31,7 @@ def prepare_dataset_profiles(dataset, probe_name, profile_dim, size_range):
     preprocessing.scale(inputs, copy=False)
     transform = ProfileTransform(probe=evaluation.PROBES[probe_name],
                                  chooser=evaluation.RADIUS_CHOOSER_CLASS(
-                                     evaluation.RADIUS_FINDER, smallest_size, largest_size, profile_dim
+                                     evaluation.RADIUS_FINDER_METHOD, smallest_size, largest_size, profile_dim
                                  ))
     profiles = transform(inputs, labels)
     with open("intermediate/{}.int".format(file_name), "w") as f:

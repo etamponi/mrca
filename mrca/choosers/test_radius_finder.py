@@ -14,6 +14,7 @@ class TestRadiusFinder(unittest.TestCase):
         inputs = numpy.asarray([
             [1], [5], [2], [8]
         ])
-        self.assertAlmostEqual(6, RadiusFinder("max")(2, inputs))
-        self.assertAlmostEqual(3.5, RadiusFinder("median")(2, inputs))
-        self.assertAlmostEqual(4, RadiusFinder("mean")(2, inputs))
+        finder = RadiusFinder(inputs)
+        self.assertAlmostEqual(6, finder("max", 2))
+        self.assertAlmostEqual(3.5, finder("median", 2))
+        self.assertAlmostEqual(4, finder("mean", 2))

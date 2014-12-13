@@ -40,7 +40,7 @@ SIZE_RANGES = [
     (0.15, 0.50)
 ]
 RADIUS_CHOOSER_CLASS = LinearSizeStep
-RADIUS_FINDER = RadiusFinder("median")
+RADIUS_FINDER_METHOD = "median"
 
 LEGEND = {
     "ab": "AdaBoost",

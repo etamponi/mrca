@@ -16,13 +16,11 @@ class LinearBoundary(object):
     def __call__(self, x, y, inputs, labels):
         same_inputs = inputs[labels == y]
         diff_inputs = inputs[labels != y]
-        same_n = len(same_inputs)
-        diff_n = len(diff_inputs)
-        if same_n + diff_n == 0:
+        if len(inputs) == 0:
             return 0
-        if same_n == 0:
+        if len(same_inputs) == 0:
             return -1
-        if diff_n == 0:
+        if len(diff_inputs) == 0:
             return +1
         same_mean = same_inputs.mean(axis=0)
         diff_mean = diff_inputs.mean(axis=0)
@@ -39,7 +37,12 @@ class LinearBoundary(object):
             # If covariance matrix is singular, assume it is a standard random variable
             inv_cov = numpy.eye(inputs.shape[1])
         normal = numpy.dot(inv_cov, same_mean - diff_mean).reshape(inputs.shape[1])
-        threshold = 0.5 * numpy.dot(normal, same_mean + diff_mean) + math.log(diff_n / same_n)
+        normal_norm = numpy.linalg.norm(normal)
+        if normal_norm == 0:
+            # If the normal has zero norm, there is no separation between the classes: return undefined complexity
+            return 0
+        normal /= normal_norm
+        threshold = 0.5 * numpy.dot(normal, same_mean + diff_mean)
         return self._normalize(numpy.dot(normal, x) - threshold)
 
     @staticmethod

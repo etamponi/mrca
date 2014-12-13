@@ -1,8 +1,8 @@
 __author__ = 'Emanuele Tamponi'
 
 
-def absolute_size(size, inputs):
+def absolute_size(size, total):
     if isinstance(size, int):
         return size
     else:
-        return int(size * (len(inputs) - 1))
+        return int(size * total)

@@ -13,8 +13,8 @@ class LinearRadiusStep(object):
         self.profile_dim = profile_dim
 
     def choose(self, inputs):
-        smallest_size = choosers.absolute_size(self.smallest_size, inputs)
-        largest_size = choosers.absolute_size(self.largest_size, inputs)
+        smallest_size = choosers.absolute_size(self.smallest_size, len(inputs) - 1)
+        largest_size = choosers.absolute_size(self.largest_size, len(inputs) - 1)
         smallest_radius = self.finder(smallest_size, inputs)
         largest_radius = self.finder(largest_size, inputs)
         radii = numpy.linspace(smallest_radius, largest_radius, self.profile_dim).tolist()

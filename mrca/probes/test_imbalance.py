@@ -1,8 +1,11 @@
 from __future__ import division
 
 import unittest
+
 import numpy
+
 from mrca.probes.imbalance import Imbalance
+
 
 __author__ = 'Emanuele Tamponi'
 

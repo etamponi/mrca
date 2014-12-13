@@ -1,6 +1,9 @@
 import unittest
+
 import numpy
+
 from mrca.neighborhood import Neighborhood
+
 
 __author__ = 'Emanuele Tamponi'
 

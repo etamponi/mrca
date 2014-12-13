@@ -1,5 +1,7 @@
 import numpy
+
 from mrca import choosers
+
 
 __author__ = 'Emanuele Tamponi'
 

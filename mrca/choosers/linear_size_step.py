@@ -1,5 +1,7 @@
 from sympy.external.tests.test_autowrap import numpy
+
 from mrca import choosers
+
 
 __author__ = 'Emanuele Tamponi'
 

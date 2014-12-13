@@ -1,6 +1,9 @@
 import unittest
+
 import numpy
+
 from mrca.probes.linear_boundary import LinearBoundary
+
 
 __author__ = 'Emanuele Tamponi'
 

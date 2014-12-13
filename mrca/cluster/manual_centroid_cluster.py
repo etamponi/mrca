@@ -1,7 +1,9 @@
 from __future__ import division
 
 import math
+
 import numpy
+
 
 __author__ = 'Emanuele Tamponi'
 

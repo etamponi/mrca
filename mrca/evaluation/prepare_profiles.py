@@ -1,12 +1,15 @@
 from itertools import product
 import os
 import cPickle
+
 from sklearn import preprocessing
+
 from analysis.dataset_utils import ArffLoader
 from mrca import evaluation
 from mrca.choosers.linear_size_step import LinearSizeStep
 from mrca.profile_transform import ProfileTransform
 from mrca.radius_finder import RadiusFinder
+
 
 __author__ = 'Emanuele Tamponi'
 

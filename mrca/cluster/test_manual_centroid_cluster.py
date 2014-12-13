@@ -1,8 +1,10 @@
 import unittest
-from matplotlib import pyplot
+
 import numpy
+
 from mrca.cluster.manual_centroid_cluster import ManualCentroidCluster
 from mrca.mri import MRI
+
 
 __author__ = 'Emanuele Tamponi'
 

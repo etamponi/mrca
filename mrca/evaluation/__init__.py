@@ -1,15 +1,17 @@
 import glob
-from itertools import product
 import multiprocessing
 import os
 import re
 import signal
+
 from sklearn.ensemble.bagging import BaggingClassifier
 from sklearn.ensemble.forest import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.ensemble.gradient_boosting import GradientBoostingClassifier
 from sklearn.ensemble.weight_boosting import AdaBoostClassifier
+
 from mrca.probes.imbalance import Imbalance
 from mrca.probes.linear_boundary import LinearBoundary
+
 
 __author__ = 'Emanuele Tamponi'
 

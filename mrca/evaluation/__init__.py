@@ -8,9 +8,8 @@ from sklearn.ensemble.bagging import BaggingClassifier
 from sklearn.ensemble.forest import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.ensemble.gradient_boosting import GradientBoostingClassifier
 from sklearn.ensemble.weight_boosting import AdaBoostClassifier
-from mrca.choosers.linear_size_step import LinearSizeStep
-from mrca.choosers.radius_finder import RadiusFinder
 
+from mrca.choosers.linear_size_step import LinearSizeStep
 from mrca.probes.imbalance import Imbalance
 from mrca.probes.linear_boundary import LinearBoundary
 
@@ -64,13 +63,16 @@ def dataset_names():
 
 
 DATASET_NAMES = dataset_names()
+# Remove these datasets as we have not enough power to analyze them
+DATASET_NAMES.remove("splice")
+DATASET_NAMES.remove("letter")
 
 
-def run_parallel(function, argument_list, processes=4):
+def run_parallel(function, argument_list, processes=3):
     pool = multiprocessing.Pool(processes=processes, initializer=init_worker)
     try:
         for arguments in argument_list:
-            pool.apply_async(function, args=tuple(arguments))
+            pool.apply_async(function, args=arguments)
         pool.close()
         pool.join()
     except KeyboardInterrupt:

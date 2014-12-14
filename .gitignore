@@ -55,3 +55,6 @@ target/
 
 # PyCharm
 .idea/
+
+# Ignore intermediate files
+intermediate/*.int

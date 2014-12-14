@@ -21,3 +21,11 @@ class TestManualCentroidCluster(unittest.TestCase):
         mris = MRI()(cluster.centroids_)
         sorted_mris = numpy.sort(mris)[::-1]
         numpy.testing.assert_array_equal(mris, sorted_mris)
+
+    def test_predict(self):
+        cluster = ManualCentroidCluster(n_clusters=2)
+        inputs = numpy.zeros((2, 5))
+        inputs[0, :] = 1
+        cluster.fit(inputs)
+        expected_labels = numpy.asarray([1, 0])
+        numpy.testing.assert_array_equal(expected_labels, cluster.predict(inputs))

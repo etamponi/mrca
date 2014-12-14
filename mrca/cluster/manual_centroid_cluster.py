@@ -21,6 +21,7 @@ class ManualCentroidCluster(object):
         for k in range(self.n_clusters):
             for j in range(dim):
                 self.centroids_[k][j] = self._centroid_component(k, j, dim)
+        return self
 
     def predict(self, inputs):
         distances = distance.cdist(inputs, self.centroids_)

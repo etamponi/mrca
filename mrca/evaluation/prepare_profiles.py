@@ -21,8 +21,7 @@ def main():
 
 def prepare_dataset_profiles(dataset, probe_name, profile_dim, size_range):
     smallest_size, largest_size = size_range
-    file_name = "{}_profiles_{}_{:02d}_{:02d}_{:02d}".format(dataset, probe_name, profile_dim,
-                                                             int(100*smallest_size), int(100*largest_size))
+    file_name = dataset_profiles_file_name(dataset, probe_name, profile_dim, smallest_size, largest_size)
     if os.path.isfile("intermediate/{}.int".format(file_name)):
         print "{} already done".format(file_name)
         return
@@ -37,6 +36,12 @@ def prepare_dataset_profiles(dataset, probe_name, profile_dim, size_range):
     with open("intermediate/{}.int".format(file_name), "w") as f:
         cPickle.dump(profiles, f)
     print "{} saved".format(file_name)
+
+
+def dataset_profiles_file_name(dataset, probe_name, profile_dim, smallest_size, largest_size):
+    return "{}_profiles_{}_{:02d}_{:02d}_{:02d}".format(
+        dataset, probe_name, profile_dim, int(100*smallest_size), int(100*largest_size)
+    )
 
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@ import multiprocessing
 import os
 import re
 import signal
+from sklearn.cluster import MiniBatchKMeans
 
 from sklearn.ensemble.bagging import BaggingClassifier
 from sklearn.ensemble.forest import RandomForestClassifier, ExtraTreesClassifier
@@ -10,6 +11,7 @@ from sklearn.ensemble.gradient_boosting import GradientBoostingClassifier
 from sklearn.ensemble.weight_boosting import AdaBoostClassifier
 
 from mrca.choosers.linear_size_step import LinearSizeStep
+from mrca.cluster.manual_centroid_cluster import ManualCentroidCluster
 from mrca.probes.imbalance import Imbalance
 from mrca.probes.linear_boundary import LinearBoundary
 
@@ -41,6 +43,13 @@ SIZE_RANGES = [
 RADIUS_CHOOSER_CLASS = LinearSizeStep
 RADIUS_FINDER_METHOD = "median"
 
+CLUSTER_NAMES = ["manual", "kmeans"]
+CLUSTER_CLASSES = {
+    "manual": ManualCentroidCluster,
+    "kmeans": MiniBatchKMeans
+}
+CLUSTER_NUMS = [2, 3, 4, 5, 6]
+
 LEGEND = {
     "ab": "AdaBoost",
     "gb": "Grad. Boosting",
@@ -48,10 +57,10 @@ LEGEND = {
     "rf": "Random Forest",
     "et": "Extr. Rand. Trees",
     "imb": "Imbalance",
-    "lin": "Linear Boundary"
+    "lin": "Linear Boundary",
+    "manual": "Custom Centroids",
+    "kmeans": "k-Means"
 }
-
-CLUSTER_NUMS = [2, 3, 4, 5, 6]
 
 
 def dataset_names():

@@ -3,8 +3,8 @@ import multiprocessing
 import os
 import re
 import signal
-from sklearn.cluster import MiniBatchKMeans
 
+from sklearn.cluster import MiniBatchKMeans
 from sklearn.ensemble.bagging import BaggingClassifier
 from sklearn.ensemble.forest import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.ensemble.gradient_boosting import GradientBoostingClassifier

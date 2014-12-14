@@ -1,11 +1,13 @@
 import cPickle
 from itertools import product
-import os
+
 import numpy
 from sklearn.metrics.metrics import zero_one_loss
+
 from mrca import evaluation
 from mrca.evaluation.prepare_profiles import dataset_profiles_file_name
 from mrca.mri import MRI
+
 
 __author__ = 'Emanuele Tamponi'
 
@@ -18,9 +20,9 @@ def main():
 
 def prepare_dataset_clusters(dataset, cluster_name, n_clusters):
     file_name = "{}_{}_cluster_{}".format(dataset, cluster_name, n_clusters)
-    if os.path.isfile("intermediate/{}.int".format(file_name)):
-        print "{} already done".format(file_name)
-        return
+    # if os.path.isfile("intermediate/{}.int".format(file_name)):
+    #     print "{} already done".format(file_name)
+    #     return
     print "{} starting".format(file_name)
     with open("intermediate/{}_predictions.int".format(dataset)) as f:
         predictions = cPickle.load(f)
@@ -42,8 +44,13 @@ def prepare_dataset_clusters(dataset, cluster_name, n_clusters):
 def prepare_cluster(profiles, predictions, cluster_name, n_clusters):
     true_labels = predictions["oracle"]
     cluster_class = evaluation.CLUSTER_CLASSES[cluster_name]
-    clus_labels = cluster_class(n_clusters).fit(profiles).predict(profiles)
-    results = {"mri": cluster_mri(profiles, clus_labels, n_clusters), "size": cluster_size(clus_labels, n_clusters)}
+    cluster = cluster_class(n_clusters)
+    clus_labels = cluster.fit(profiles).predict(profiles)
+    results = {
+        "mri": cluster_mri(profiles, clus_labels, n_clusters),
+        "size": cluster_size(clus_labels, n_clusters),
+        "centroids": cluster.cluster_centers_
+    }
     for classifier in evaluation.CLASSIFIER_NAMES:
         pred_labels = predictions[classifier]
         results[classifier] = cluster_error(true_labels, pred_labels, clus_labels, n_clusters)

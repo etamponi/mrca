@@ -3,7 +3,6 @@ import unittest
 import numpy
 
 from mrca.choosers.linear_radius_step import LinearRadiusStep
-from mrca.choosers.radius_finder import RadiusFinder
 
 
 __author__ = 'Emanuele Tamponi'

@@ -13,18 +13,18 @@ class ManualCentroidCluster(object):
 
     def __init__(self, n_clusters):
         self.n_clusters = n_clusters
-        self.centroids_ = None
+        self.cluster_centers_ = None
 
     def fit(self, inputs):
         dim = inputs.shape[1]
-        self.centroids_ = numpy.zeros((self.n_clusters, dim))
+        self.cluster_centers_ = numpy.zeros((self.n_clusters, dim))
         for k in range(self.n_clusters):
             for j in range(dim):
-                self.centroids_[k][j] = self._centroid_component(k, j, dim)
+                self.cluster_centers_[k][j] = self._centroid_component(k, j, dim)
         return self
 
     def predict(self, inputs):
-        distances = distance.cdist(inputs, self.centroids_)
+        distances = distance.cdist(inputs, self.cluster_centers_)
         return distances.argmin(axis=1)
 
     def _centroid_component(self, k, j, dim):

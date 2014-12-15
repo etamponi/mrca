@@ -58,3 +58,5 @@ target/
 
 # Ignore intermediate files
 intermediate/*.int
+figures/*.pdf
+figures/*.tex

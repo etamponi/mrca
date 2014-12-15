@@ -1,8 +1,6 @@
-1)  Run prepare_predictions and prepare_profiles (they can be run in parallel, but set the number of processes
-    in the file if you have low RAM)
-2)  Run prepare_clusters to have the final results. Analysis for each dataset is in the files:
+1)  Run prepare_predictions and prepare_profiles (they can be run in parallel)
+2)  Run prepare_clusters to have the final results. Results are in the files:
 
-        <dataset>_<cluster_algo>_<n_clusters>
+        <dataset>_<cluster_algo>_cluster_<n_clusters>.int
 
-    and there are 36(datasets) x 30(profile configurations) x 2(cluster algorithms) x 5(numbers of clusters) results
-3)  analyze_results will prepare all the figures and tables
+3)  prepare_figures will prepare all the figures and tables

@@ -19,7 +19,7 @@ def main():
 
 
 def prepare_dataset_clusters(dataset, cluster_name, n_clusters):
-    file_name = "{}_{}_cluster_{}".format(dataset, cluster_name, n_clusters)
+    file_name = cluster_file_name(dataset, cluster_name, n_clusters)
     # if os.path.isfile("intermediate/{}.int".format(file_name)):
     #     print "{} already done".format(file_name)
     #     return
@@ -37,7 +37,7 @@ def prepare_dataset_clusters(dataset, cluster_name, n_clusters):
             profiles, predictions, cluster_name, n_clusters
         )
     with open("intermediate/{}.int".format(file_name), "w") as f:
-        cPickle.dump(predictions, f)
+        cPickle.dump(results, f)
     print "{} saved".format(file_name)
 
 
@@ -49,11 +49,15 @@ def prepare_cluster(profiles, predictions, cluster_name, n_clusters):
     results = {
         "mri": cluster_mri(profiles, clus_labels, n_clusters),
         "size": cluster_size(clus_labels, n_clusters),
-        "centroids": cluster.cluster_centers_
+        "centroid": cluster.cluster_centers_
     }
+    sorting_indices = results["mri"].argsort()
+    results["mri"] = results["mri"][sorting_indices]
+    results["size"] = results["size"][sorting_indices]
+    results["centroid"] = results["centroid"][sorting_indices]
     for classifier in evaluation.CLASSIFIER_NAMES:
         pred_labels = predictions[classifier]
-        results[classifier] = cluster_error(true_labels, pred_labels, clus_labels, n_clusters)
+        results[classifier] = cluster_error(true_labels, pred_labels, clus_labels, n_clusters)[sorting_indices]
     return results
 
 
@@ -74,6 +78,10 @@ def cluster_error(true_labels, pred_labels, clus_labels, n_clusters):
     for c in range(n_clusters):
         ret[c] = zero_one_loss(true_labels[clus_labels == c], pred_labels[clus_labels == c])
     return ret
+
+
+def cluster_file_name(dataset, cluster_name, n_clusters):
+    return "{}_{}_cluster_{}".format(dataset, cluster_name, n_clusters)
 
 
 if __name__ == '__main__':

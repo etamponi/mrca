@@ -13,3 +13,6 @@ class Imbalance(object):
             return 0
         count = (labels == y).sum()
         return 2 * count / len(labels) - 1
+
+    def prepare(self, inputs, labels):
+        pass

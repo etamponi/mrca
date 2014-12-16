@@ -13,6 +13,7 @@ class ProfileTransform(object):
         self.chooser = chooser
 
     def __call__(self, inputs, labels):
+        self.probe.prepare(inputs, labels)
         neigh = Neighborhood(inputs, labels)
         radii = self.chooser.choose(inputs)
         profiles = numpy.zeros((len(inputs), len(radii)))

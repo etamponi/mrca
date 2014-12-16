@@ -14,6 +14,7 @@ class TestLinearBoundary(unittest.TestCase):
         inputs = numpy.vstack((numpy.random.randn(10, 3) + 2, numpy.random.randn(10, 3) - 1))
         labels = numpy.asarray(list(10*"a") + list(10*"b"))
         probe = LinearBoundary()
+        probe.prepare(inputs, labels)
         for i in range(10):
             x = numpy.random.randn(3)
             y = numpy.random.choice(["a", "b"])
@@ -27,6 +28,7 @@ class TestLinearBoundary(unittest.TestCase):
         inputs = numpy.random.randn(5, 3)
         labels = numpy.asarray(list("aaaaa"))
         probe = LinearBoundary()
+        probe.prepare(inputs, labels)
         value = probe(numpy.ones(3), "a", inputs, labels)
         self.assertEqual(1, value)
         value = probe(numpy.ones(3), "b", inputs, labels)
@@ -36,6 +38,7 @@ class TestLinearBoundary(unittest.TestCase):
         inputs = numpy.random.randn(2, 3)
         labels = numpy.asarray(list("ab"))
         probe = LinearBoundary()
+        probe.prepare(inputs, labels)
         value = probe(numpy.ones(3), "a", inputs, labels)
         self.assertTrue(-1 <= value <= 1)
 
@@ -43,6 +46,7 @@ class TestLinearBoundary(unittest.TestCase):
         inputs = numpy.ones((10, 3))
         labels = numpy.asarray(list("aaaaabbbbb"))
         probe = LinearBoundary()
+        probe.prepare(inputs, labels)
         value = probe(numpy.zeros(3), "a", inputs, labels)
         self.assertTrue(-1 <= value <= 1)
 
@@ -50,4 +54,5 @@ class TestLinearBoundary(unittest.TestCase):
         inputs = numpy.ones((0, 3))
         labels = numpy.asarray([]).astype('|S1')
         probe = LinearBoundary()
+        probe.prepare(inputs, labels)
         self.assertEqual(0, probe(numpy.zeros(3), "a", inputs, labels))

@@ -3,6 +3,7 @@ import cPickle
 import numpy
 from scipy.stats.stats import pearsonr
 from mrca import evaluation
+from mrca.evaluation import LEGEND
 from mrca.evaluation.prepare_clusters import cluster_file_name
 
 __author__ = 'Emanuele Tamponi'
@@ -32,23 +33,21 @@ def synthesis_table(probe, classifier, all_data):
     with open("figures/{}.tex".format(table_name), "w") as f:
         f.writelines((r"\begin{table}\centering", NL, r"\label{tab:%s}" % table_name, NL))
         f.writelines((r"\renewcommand{\arraystretch}{1.2}", NL))
-        f.writelines((r"\begin{tabularx}{0.9\textwidth}{XXX*{5}{W}|*{5}{W}}", NL))
+        f.writelines((r"\renewcommand{\tabcolsep}{0pt}", NL))
+        f.writelines((r"\begin{tabularx}{0.9\textwidth}{*{3}{>{\centering}X}*{5}{W}p{3mm}*{5}{W}}", NL))
         f.writelines((r"\toprule", NL))
         f.writelines((
-            r" & & & ",
-            " & ".join([("\multicolumn{5}{c}{%s}" % evaluation.LEGEND[c]) for c in evaluation.CLUSTER_NAMES]),
-            r" \\", NL,
-            r"\cmidrule(lr){4-8} \cmidrule(lr){9-13}", NL
+            r" & & & \multicolumn{5}{c}{%s} & & \multicolumn{5}{c}{%s} \\" % (LEGEND["manual"], LEGEND["kmeans"]), NL,
         ))
         f.writelines((
-            r"\centering $\radius_1$ & \centering $\radius_\profiledim$ & \centering $\profiledim$ & ",
-            r" & ".join([(r"\multicolumn{1}{c}{$%d$}" % n_c) for n_c in evaluation.CLUSTER_NUMS]), r" & ",
+            r"$\radius_1$ & $\radius_\profiledim$ & $\profiledim$ & ",
+            r" & ".join([(r"\multicolumn{1}{c}{$%d$}" % n_c) for n_c in evaluation.CLUSTER_NUMS]), r" & & ",
             r" & ".join([(r"\multicolumn{1}{c}{$%d$}" % n_c) for n_c in evaluation.CLUSTER_NUMS]), r" \\",
             NL
         ))
-        for i in range(1, 14):
-            f.write(r"\cmidrule(lr){%d-%d}" % (i, i))
-        f.write(NL)
+        f.writelines((
+            r"\cmidrule(lr){1-3} \cmidrule(lr){4-8} \cmidrule{10-14}"
+        ))
         for range_i, table_section in enumerate(table_data):
             f.writelines((
                 r"\multirow{5}{*}{%2.0f\%%} & " % (100*evaluation.SIZE_RANGES[range_i][0]),
@@ -63,12 +62,16 @@ def synthesis_table(probe, classifier, all_data):
                         value = int(round(value))
                         if value > 50:
                             value = r"\mathbf{%d}" % value
-                        f.write("$%s$" % value)
+                        f.write("$%s$ " % value)
                         if n_clusters_i < 4 or cluster_i < 1:
                             f.write(r"& ")
-                f.writelines((r" \\", NL))
+                    if cluster_i < 1:
+                        f.write(r"& ")
+                f.write(r" \\")
+                if dim_i < 4:
+                    f.write(NL)
             if range_i < 2:
-                f.writelines((r"\midrule", NL))
+                f.writelines((r"[3mm]", NL))
         f.writelines((r"\bottomrule", NL))
         f.writelines((r"\end{tabularx}", NL))
         caption = r"Percentage of datasets on which MRI with {} Probe has correctly estimated {} error rate.".format(

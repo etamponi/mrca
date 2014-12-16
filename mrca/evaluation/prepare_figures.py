@@ -74,7 +74,7 @@ def synthesis_table(probe, classifier, all_data):
                 f.writelines((r"[3mm]", NL))
         f.writelines((r"\bottomrule", NL))
         f.writelines((r"\end{tabularx}", NL))
-        caption = r"Percentage of datasets on which MRI with {} Probe has correctly estimated {} error rate.".format(
+        caption = r"Percent of datasets on which MRI with {} Probe has correctly estimated {} error rate.".format(
             evaluation.LEGEND[probe],
             evaluation.LEGEND[classifier]
         )

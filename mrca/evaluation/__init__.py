@@ -63,8 +63,8 @@ LEGEND = {
 }
 
 
-def dataset_names():
-    dataset_dir = os.path.join(os.path.dirname(__file__), "datasets")
+def dataset_names(directory="datasets"):
+    dataset_dir = os.path.join(os.path.dirname(__file__), directory)
     names = []
     for dataset_path in glob.glob("{}/*.arff".format(dataset_dir)):
         names.append(re.search(r"([\w\-]+)\.arff", dataset_path).group(1))

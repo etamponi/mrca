@@ -4,7 +4,7 @@ import cPickle
 
 from sklearn import preprocessing
 
-from analysis.dataset_utils import ArffLoader
+from eole.analysis.dataset_utils import ArffLoader
 from mrca import evaluation
 from mrca.profile_transform import ProfileTransform
 

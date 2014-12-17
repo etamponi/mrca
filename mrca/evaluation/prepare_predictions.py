@@ -5,7 +5,7 @@ import numpy
 import sklearn
 from sklearn.cross_validation import StratifiedKFold
 
-from analysis.dataset_utils import ArffLoader
+from eole.analysis.dataset_utils import ArffLoader
 from mrca import evaluation
 
 

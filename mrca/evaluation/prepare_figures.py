@@ -1,9 +1,9 @@
-from itertools import product
+from itertools import product, cycle
 import cPickle
+import matplotlib
 import numpy
 from scipy.stats.stats import pearsonr
-from mrca import evaluation
-from mrca.evaluation import LEGEND
+from mrca.evaluation import *
 from mrca.evaluation.prepare_clusters import cluster_file_name
 
 __author__ = 'Emanuele Tamponi'
@@ -13,15 +13,24 @@ NL = "\n"
 
 
 def main():
+    configure_matplotlib()
+    from matplotlib import pyplot
+
     all_data = load_data()
-    for probe, classifier in product(evaluation.PROBE_NAMES, evaluation.CLASSIFIER_NAMES):
+
+    for probe, classifier in product(PROBE_NAMES, CLASSIFIER_NAMES):
         synthesis_table(probe, classifier, all_data)
+
+    size_ranges = [(0.05, 0.25)]  # Only one size range
+    cluster_names = ["manual"]    # Show only manual centroid clustering
+    classifier_names = ["rf"]     # Plot only against RF
+    for params in product(DATASET_NAMES, cluster_names, PROBE_NAMES, PROFILE_DIMS, size_ranges, classifier_names):
+        draw_plot(pyplot, all_data, *params)
 
 
 def load_data():
     all_data = {}
-    for dataset, cluster_name, n_clusters in product(evaluation.DATASET_NAMES, evaluation.CLUSTER_NAMES,
-                                                     evaluation.CLUSTER_NUMS):
+    for dataset, cluster_name, n_clusters in product(DATASET_NAMES, CLUSTER_NAMES, CLUSTER_NUMS):
         with open("intermediate/{}.int".format(cluster_file_name(dataset, cluster_name, n_clusters))) as f:
             all_data[(dataset, cluster_name, n_clusters)] = cPickle.load(f)
     return all_data
@@ -41,8 +50,8 @@ def synthesis_table(probe, classifier, all_data):
         ))
         f.writelines((
             r"$\radius_1$ & $\radius_\profiledim$ & $\profiledim$ & ",
-            r" & ".join([(r"\multicolumn{1}{c}{$%d$}" % n_c) for n_c in evaluation.CLUSTER_NUMS]), r" & & ",
-            r" & ".join([(r"\multicolumn{1}{c}{$%d$}" % n_c) for n_c in evaluation.CLUSTER_NUMS]), r" \\",
+            r" & ".join([(r"\multicolumn{1}{c}{$%d$}" % n_c) for n_c in CLUSTER_NUMS]), r" & & ",
+            r" & ".join([(r"\multicolumn{1}{c}{$%d$}" % n_c) for n_c in CLUSTER_NUMS]), r" \\",
             NL
         ))
         f.writelines((
@@ -50,13 +59,13 @@ def synthesis_table(probe, classifier, all_data):
         ))
         for range_i, table_section in enumerate(table_data):
             f.writelines((
-                r"\multirow{5}{*}{%2.0f\%%} & " % (100*evaluation.SIZE_RANGES[range_i][0]),
-                r"\multirow{5}{*}{%2.0f\%%} & " % (100*evaluation.SIZE_RANGES[range_i][1])
+                r"\multirow{5}{*}{%2.0f\%%} & " % (100*SIZE_RANGES[range_i][0]),
+                r"\multirow{5}{*}{%2.0f\%%} & " % (100*SIZE_RANGES[range_i][1])
             ))
             for dim_i, dim_data in enumerate(table_section):
                 if dim_i > 0:
                     f.write(r" & & ")
-                f.write(r"%d & " % evaluation.PROFILE_DIMS[dim_i])
+                f.write(r"%d & " % PROFILE_DIMS[dim_i])
                 for cluster_i, cluster_data in enumerate(dim_data):
                     for n_clusters_i, value in enumerate(cluster_data):
                         value = int(round(value))
@@ -75,28 +84,27 @@ def synthesis_table(probe, classifier, all_data):
         f.writelines((r"\bottomrule", NL))
         f.writelines((r"\end{tabularx}", NL))
         caption = r"Percent of datasets on which MRI with {} Probe has correctly estimated {} error rate.".format(
-            evaluation.LEGEND[probe],
-            evaluation.LEGEND[classifier]
+            LEGEND[probe], LEGEND[classifier]
         )
         f.writelines((r"\caption{%s}" % caption, NL))
         f.writelines((r"\end{table}", NL))
 
 
 def prepare_synthesis_table_data(probe, classifier, all_data):
-    n_size_ranges = len(evaluation.SIZE_RANGES)
-    n_profile_dims = len(evaluation.PROFILE_DIMS)
-    n_cluster_names = len(evaluation.CLUSTER_NAMES)
-    n_cluster_nums = len(evaluation.CLUSTER_NUMS)
+    n_size_ranges = len(SIZE_RANGES)
+    n_profile_dims = len(PROFILE_DIMS)
+    n_cluster_names = len(CLUSTER_NAMES)
+    n_cluster_nums = len(CLUSTER_NUMS)
     table_data = numpy.zeros((n_size_ranges, n_profile_dims, n_cluster_names, n_cluster_nums))
     for range_i in range(n_size_ranges):
-        size_range = evaluation.SIZE_RANGES[range_i]
+        size_range = SIZE_RANGES[range_i]
         for dim_i in range(n_profile_dims):
-            dim = evaluation.PROFILE_DIMS[dim_i]
+            dim = PROFILE_DIMS[dim_i]
             for cluster_i in range(n_cluster_names):
-                cluster = evaluation.CLUSTER_NAMES[cluster_i]
+                cluster = CLUSTER_NAMES[cluster_i]
                 for n_clusters_i in range(n_cluster_nums):
-                    n_clusters = evaluation.CLUSTER_NUMS[n_clusters_i]
-                    for dataset in evaluation.DATASET_NAMES:
+                    n_clusters = CLUSTER_NUMS[n_clusters_i]
+                    for dataset in DATASET_NAMES:
                         mris = all_data[(dataset, cluster, n_clusters)][(probe, dim, size_range)]["mri"]
                         errs = all_data[(dataset, cluster, n_clusters)][(probe, dim, size_range)][classifier]
                         sizes = all_data[(dataset, cluster, n_clusters)][(probe, dim, size_range)]["size"]
@@ -105,8 +113,69 @@ def prepare_synthesis_table_data(probe, classifier, all_data):
                         corr, p = pearsonr(mris, errs)
                         if corr > 0 and p <= 0.10:
                             table_data[range_i, dim_i, cluster_i, n_clusters_i] += 1
-    table_data = 100 * table_data / len(evaluation.DATASET_NAMES)
+    table_data = 100 * table_data / len(DATASET_NAMES)
     return table_data
+
+
+def draw_plot(pyplot, all_data, dataset, cluster, probe, profile_dim, size_range, classifier):
+    linestyles = cycle(["-", "--", "-.", ":"])
+    markers = cycle(["s", "d", "^", "o"])
+
+    figure_name = "plot_{}_{}_{}_{:02d}_{:02d}_{:02d}_{}".format(
+        dataset, cluster, probe, profile_dim,
+        int(100*size_range[0]), int(100*size_range[1]),
+        classifier
+    )
+
+    for n_clusters in CLUSTER_NUMS[1:]:
+        data = all_data[(dataset, cluster, n_clusters)][(probe, profile_dim, size_range)]
+        mris = data["mri"]
+        errs = data[classifier]
+        sizes = data["size"]
+        mris = mris[sizes > 0]
+        errs = errs[sizes > 0]
+        pyplot.plot(mris, errs, linestyle=next(linestyles), marker=next(markers),
+                    label="{} clusters".format(n_clusters), linewidth=1.5)
+
+    pyplot.legend(loc="upper left")
+    pyplot.grid()
+    x_range = pyplot.xlim()[1] - pyplot.xlim()[0]
+    y_range = pyplot.ylim()[1] - pyplot.ylim()[0]
+    pyplot.axes().set_aspect(x_range / y_range)
+    pyplot.xticks(numpy.linspace(pyplot.xlim()[0], pyplot.xlim()[1], 6))
+    pyplot.yticks(numpy.linspace(pyplot.ylim()[0], pyplot.ylim()[1], 6))
+
+    pyplot.xlabel("MRI ({} Probe)".format(LEGEND[probe]))
+    pyplot.ylabel("Error Rate")
+    pyplot.title("{} - MRI vs. {} Error Rate".format(
+        dataset, LEGEND[classifier]
+    ))
+
+    pyplot.savefig("figures/{}.pdf".format(figure_name), bbox_inches="tight")
+    pyplot.close()
+
+
+def configure_matplotlib():
+    matplotlib.use('pgf')
+    pgf_rc = {
+        "font.family": "serif",  # use serif/main font for text elements
+        "text.usetex": True,     # use inline math for ticks
+        "pgf.rcfonts": False,    # don't setup fonts from rc parameters
+        "pgf.texsystem": "pdflatex",
+        "pgf.preamble": [
+            r"\usepackage[utf8]{inputenc}",
+            r"\usepackage{microtype}",
+            r"\usepackage{amsfonts}",
+            r"\usepackage{amsmath}",
+            r"\usepackage{amssymb}",
+            r"\usepackage{booktabs}",
+            r"\usepackage{fancyhdr}",
+            r"\usepackage{graphicx}",
+            r"\usepackage{nicefrac}",
+            r"\usepackage{xspace}"
+        ]
+    }
+    matplotlib.rcParams.update(pgf_rc)
 
 
 if __name__ == '__main__':

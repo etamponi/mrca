@@ -75,20 +75,3 @@ DATASET_NAMES = dataset_names()
 # Remove these datasets as we have not enough power to analyze them
 DATASET_NAMES.remove("splice")
 DATASET_NAMES.remove("letter")
-
-
-def run_parallel(function, argument_list, processes=3):
-    pool = multiprocessing.Pool(processes=processes, initializer=init_worker)
-    try:
-        for arguments in argument_list:
-            pool.apply_async(function, args=arguments)
-        pool.close()
-        pool.join()
-    except KeyboardInterrupt:
-        print "Keyboard Interrupt, terminating..."
-        pool.terminate()
-        pool.join()
-
-
-def init_worker():
-    signal.signal(signal.SIGINT, signal.SIG_IGN)

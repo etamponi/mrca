@@ -6,6 +6,7 @@ import sklearn
 from sklearn.cross_validation import StratifiedKFold
 
 from eole.analysis.dataset_utils import ArffLoader
+from eole.evaluation import run_parallel
 from mrca import evaluation
 
 
@@ -14,7 +15,7 @@ __author__ = 'Emanuele Tamponi'
 
 def main():
     argument_list = [(dataset, ) for dataset in evaluation.DATASET_NAMES]
-    evaluation.run_parallel(prepare_dataset_predictions, argument_list)
+    run_parallel(prepare_dataset_predictions, argument_list)
 
 
 def prepare_dataset_predictions(dataset):

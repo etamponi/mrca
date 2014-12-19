@@ -5,6 +5,7 @@ import cPickle
 from sklearn import preprocessing
 
 from eole.analysis.dataset_utils import ArffLoader
+from eole.evaluation import run_parallel
 from mrca import evaluation
 from mrca.profile_transform import ProfileTransform
 
@@ -16,7 +17,7 @@ def main():
     argument_list = product(
         evaluation.DATASET_NAMES, evaluation.PROBE_NAMES, evaluation.PROFILE_DIMS, evaluation.SIZE_RANGES
     )
-    evaluation.run_parallel(prepare_dataset_profiles, argument_list)
+    run_parallel(prepare_dataset_profiles, argument_list)
 
 
 def prepare_dataset_profiles(dataset, probe_name, profile_dim, size_range):

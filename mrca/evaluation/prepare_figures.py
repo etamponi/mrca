@@ -41,9 +41,9 @@ def synthesis_table(probe, classifier, all_data):
     table_name = "synthesis_{}_{}".format(probe, classifier)
     with open("figures/{}.tex".format(table_name), "w") as f:
         f.writelines((r"\begin{table}\centering", NL, r"\label{tab:%s}" % table_name, NL))
-        f.writelines((r"\renewcommand{\arraystretch}{1.2}", NL))
+        f.writelines((r"\renewcommand{\arraystretch}{1.1}", NL))
         f.writelines((r"\renewcommand{\tabcolsep}{0pt}", NL))
-        f.writelines((r"\begin{tabularx}{0.9\textwidth}{*{3}{>{\centering}X}*{5}{W}p{3mm}*{5}{W}}", NL))
+        f.writelines((r"\begin{tabularx}{0.9\textwidth}{*{3}{>{\small\centering}X}*{5}{W}p{3mm}*{5}{W}}", NL))
         f.writelines((r"\toprule", NL))
         f.writelines((
             r" & & & \multicolumn{5}{c}{%s} & & \multicolumn{5}{c}{%s} \\" % (LEGEND["manual"], LEGEND["kmeans"]), NL,
@@ -69,7 +69,7 @@ def synthesis_table(probe, classifier, all_data):
                 for cluster_i, cluster_data in enumerate(dim_data):
                     for n_clusters_i, value in enumerate(cluster_data):
                         value = int(round(value))
-                        if value > 50:
+                        if value >= 33:
                             value = r"\mathbf{%d}" % value
                         f.write("$%s$ " % value)
                         if n_clusters_i < 4 or cluster_i < 1:
@@ -80,7 +80,7 @@ def synthesis_table(probe, classifier, all_data):
                 if dim_i < 4:
                     f.write(NL)
             if range_i < 2:
-                f.writelines((r"[3mm]", NL))
+                f.writelines((r"[2mm]", NL))
         f.writelines((r"\bottomrule", NL))
         f.writelines((r"\end{tabularx}", NL))
         caption = r"Percent of datasets on which MRI with {} Probe has correctly estimated {} error rate.".format(

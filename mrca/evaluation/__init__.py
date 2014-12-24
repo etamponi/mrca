@@ -13,26 +13,29 @@ from sklearn.ensemble.weight_boosting import AdaBoostClassifier
 from mrca.choosers.linear_size_step import LinearSizeStep
 from mrca.cluster.manual_centroid_cluster import ManualCentroidCluster
 from mrca.probes.imbalance import Imbalance
+from mrca.probes.lda_probe import LDAProbe
 from mrca.probes.linear_boundary import LinearBoundary
 
 
 __author__ = 'Emanuele Tamponi'
 
 
-CLASSIFIER_NAMES = ["ab", "gb", "ba", "rf", "et"]
+# CLASSIFIER_NAMES = ["ab", "gb", "ba", "rf", "et"]
+CLASSIFIER_NAMES = ["ab", "ba", "rf"]
 CLASSIFIERS = {
     "ab": AdaBoostClassifier(n_estimators=100),
-    "gb": GradientBoostingClassifier(n_estimators=100),
+    # "gb": GradientBoostingClassifier(n_estimators=100),
     "ba": BaggingClassifier(n_estimators=100),
     "rf": RandomForestClassifier(n_estimators=100),
-    "et": ExtraTreesClassifier(n_estimators=100)
+    # "et": ExtraTreesClassifier(n_estimators=100)
 }
 N_FOLDS = 5
 
 PROBE_NAMES = ["imb", "lin"]
 PROBES = {
     "imb": Imbalance(),
-    "lin": LinearBoundary()
+    "lin": LinearBoundary(),
+    # "lda": LDAProbe()
 }
 PROFILE_DIMS = range(5, 26, 5)
 SIZE_RANGES = [
@@ -52,12 +55,13 @@ CLUSTER_NUMS = [2, 3, 4, 5, 6]
 
 LEGEND = {
     "ab": "AdaBoost",
-    "gb": "Grad. Boosting",
+    # "gb": "Grad. Boosting",
     "ba": "Bagging",
     "rf": "Random Forest",
-    "et": "Extr. Rand. Trees",
+    # "et": "Extr. Rand. Trees",
     "imb": "Imbalance",
     "lin": "Linear Boundary",
+    # "lda": "LDA",
     "manual": "Custom Centroids",
     "kmeans": "k-Means"
 }

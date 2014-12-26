@@ -1,19 +1,16 @@
 import glob
-import multiprocessing
+from itertools import product
 import os
 import re
-import signal
 
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.ensemble.bagging import BaggingClassifier
-from sklearn.ensemble.forest import RandomForestClassifier, ExtraTreesClassifier
-from sklearn.ensemble.gradient_boosting import GradientBoostingClassifier
+from sklearn.ensemble.forest import RandomForestClassifier
 from sklearn.ensemble.weight_boosting import AdaBoostClassifier
 
-from mrca.choosers.linear_size_step import LinearSizeStep
+from mrca.choosers.linear_radius_step import LinearRadiusStep
 from mrca.cluster.manual_centroid_cluster import ManualCentroidCluster
 from mrca.probes.imbalance import Imbalance
-from mrca.probes.lda_probe import LDAProbe
 from mrca.probes.linear_boundary import LinearBoundary
 
 
@@ -38,13 +35,9 @@ PROBES = {
     # "lda": LDAProbe()
 }
 PROFILE_DIMS = range(5, 26, 5)
-SIZE_RANGES = [
-    (0.05, 0.25),
-    (0.10, 0.33),
-    (0.15, 0.50)
-]
-RADIUS_CHOOSER_CLASS = LinearSizeStep
-RADIUS_FINDER_METHOD = "median"
+SIZE_RANGES = list(product([0.05, 0.10, 0.15, 0.20, 0.25], [0.40, 0.45, 0.50, 0.55, 0.60]))
+RADIUS_CHOOSER_CLASS = LinearRadiusStep
+RADIUS_FINDER_METHOD = "mean"
 
 CLUSTER_NAMES = ["manual", "kmeans"]
 CLUSTER_CLASSES = {
@@ -79,3 +72,8 @@ DATASET_NAMES = dataset_names()
 # Remove these datasets as we have not enough power to analyze them
 DATASET_NAMES.remove("splice")
 DATASET_NAMES.remove("letter")
+
+
+CLUSTERING_CONFS = list(product(DATASET_NAMES, CLUSTER_NAMES, CLUSTER_NUMS))
+
+PROFILE_CONFS = list(product(PROBE_NAMES, PROFILE_DIMS, SIZE_RANGES))

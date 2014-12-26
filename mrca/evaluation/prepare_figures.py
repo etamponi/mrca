@@ -13,19 +13,44 @@ NL = "\n"
 
 
 def main():
-    configure_matplotlib()
+    # configure_matplotlib()
     from matplotlib import pyplot
 
     all_data = load_data()
 
-    for probe, classifier in product(PROBE_NAMES, CLASSIFIER_NAMES):
-        synthesis_table(probe, classifier, all_data)
+    # for probe, classifier in product(PROBE_NAMES, CLASSIFIER_NAMES):
+    #     synthesis_table(probe, classifier, all_data)
 
     size_ranges = [(0.05, 0.25)]  # Only one size range
     cluster_names = ["manual"]    # Show only manual centroid clustering
     classifier_names = ["rf"]     # Plot only against RF
-    for params in product(DATASET_NAMES, cluster_names, PROBE_NAMES, PROFILE_DIMS, size_ranges, classifier_names):
-        draw_plot(pyplot, all_data, *params)
+    # for params in product(DATASET_NAMES, cluster_names, PROBE_NAMES, PROFILE_DIMS, size_ranges, classifier_names):
+    #     draw_plot(pyplot, all_data, *params)
+    cluster_nums = [3, 4, 5]
+    for params in product(cluster_nums, cluster_names, PROBE_NAMES, PROFILE_DIMS, SIZE_RANGES, classifier_names):
+        draw_correlation_with_size(pyplot, all_data, *params)
+
+
+def draw_correlation_with_size(pyplot, all_data, n_clusters, cluster, probe, profile_dim, size_range, classifier):
+    sizes = numpy.zeros(len(DATASET_NAMES))
+    corrs = numpy.zeros(len(DATASET_NAMES))
+    ps = numpy.zeros(len(DATASET_NAMES))
+    for i, dataset in enumerate(DATASET_NAMES):
+        data = all_data[(dataset, cluster, n_clusters)][(probe, profile_dim, size_range)]
+        curr_sizes = data["size"]
+        size = curr_sizes.sum()
+        mris = data["mri"][curr_sizes > 0]
+        errs = data[classifier][curr_sizes > 0]
+        corr, p = pearsonr(mris, errs)
+        sizes[i] = size
+        corrs[i] = corr
+        ps[i] = p
+    pyplot.scatter(sizes, corrs, c="k")
+    pyplot.axes().set_xscale("log")
+    pyplot.savefig("figures/scatter_{}_{}_{}_{:02d}_{:02d}.pdf".format(
+        probe, profile_dim, n_clusters, int(100*size_range[0]), int(100*size_range[1])
+    ), bbox_inches="tight")
+    pyplot.close()
 
 
 def load_data():
@@ -69,7 +94,7 @@ def synthesis_table(probe, classifier, all_data):
                 for cluster_i, cluster_data in enumerate(dim_data):
                     for n_clusters_i, value in enumerate(cluster_data):
                         value = int(round(value))
-                        if value >= 33:
+                        if value > 66:
                             value = r"\mathbf{%d}" % value
                         f.write("$%s$ " % value)
                         if n_clusters_i < 4 or cluster_i < 1:
@@ -110,8 +135,8 @@ def prepare_synthesis_table_data(probe, classifier, all_data):
                         sizes = all_data[(dataset, cluster, n_clusters)][(probe, dim, size_range)]["size"]
                         mris = mris[sizes > 0]
                         errs = errs[sizes > 0]
-                        corr, p = pearsonr(mris, errs)
-                        if corr > 0 and p <= 0.10:
+                        corr, _ = pearsonr(mris, errs)
+                        if corr > 0.80:
                             table_data[range_i, dim_i, cluster_i, n_clusters_i] += 1
     table_data = 100 * table_data / len(DATASET_NAMES)
     return table_data

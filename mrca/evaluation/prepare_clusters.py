@@ -3,6 +3,7 @@ from itertools import product
 
 import numpy
 from sklearn.metrics.metrics import zero_one_loss
+from eole.evaluation import run_parallel
 
 from mrca import evaluation
 from mrca.evaluation.prepare_profiles import dataset_profiles_file_name
@@ -13,9 +14,8 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    for dataset, cluster_name, n_clusters in product(evaluation.DATASET_NAMES, evaluation.CLUSTER_NAMES,
-                                                     evaluation.CLUSTER_NUMS):
-        prepare_dataset_clusters(dataset, cluster_name, n_clusters)
+    arg_list = product(evaluation.DATASET_NAMES, evaluation.CLUSTER_NAMES, evaluation.CLUSTER_NUMS)
+    run_parallel(prepare_dataset_clusters, arg_list)
 
 
 def prepare_dataset_clusters(dataset, cluster_name, n_clusters):

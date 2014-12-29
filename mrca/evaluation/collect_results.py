@@ -16,11 +16,13 @@ def main():
     prepare_data_per_profile(raw_data)
 
 
-def prepare_data_per_profile(raw_data):
+def prepare_data_per_profile(raw_data=None):
     file_name = "intermediate/all_data_per_profile.int"
     if os.path.isfile(file_name):
         with open(file_name) as f:
             return cPickle.load(f)
+    if raw_data is None:
+        return None
     data = defaultdict(list)
     for clustering_conf, profile_conf, classifier in product(CLUSTERING_CONFS, PROFILE_CONFS, CLASSIFIER_NAMES):
         sizes = raw_data[clustering_conf, profile_conf]["size"]
@@ -41,11 +43,13 @@ def prepare_data_per_profile(raw_data):
     return data
 
 
-def prepare_data_per_clustering(raw_data):
+def prepare_data_per_clustering(raw_data=None):
     file_name = "intermediate/all_data_per_clustering.int"
     if os.path.isfile(file_name):
         with open(file_name) as f:
             return cPickle.load(f)
+    if raw_data is None:
+        return None
     data = defaultdict(list)
     for clustering_conf, profile_conf, classifier in product(CLUSTERING_CONFS, PROFILE_CONFS, CLASSIFIER_NAMES):
         sizes = raw_data[clustering_conf, profile_conf]["size"]
